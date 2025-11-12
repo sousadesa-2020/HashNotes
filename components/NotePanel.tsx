@@ -33,7 +33,7 @@ export default function NotePanel() {
     const controller = new AbortController();
     (async () => {
       try {
-        const res = await fetch(`/api/notes?limit=20&includeText=false&appOnly=false`, { signal: controller.signal });
+        const res = await fetch(`/api/notes?limit=20`, { signal: controller.signal });
         if (!res.ok) return;
         const json = await res.json();
         const remote = Array.isArray(json.items) ? (json.items as unknown[]) : [];

@@ -89,17 +89,13 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const limit = Math.min(Number(searchParams.get("limit") || 20), 50);
-    const includeText = searchParams.get("includeText") === "true";
     const pageToken = searchParams.get("pageToken") || undefined;
-    const appOnly = searchParams.get("appOnly") !== "false";
 
     let query = pinata.files.public
       .list()
       .order("DESC")
-      .limit(limit);
-    if (appOnly) {
-      query = query.keyvalues({ app: "hashnotes" });
-    }
+      .limit(limit)
+      .keyvalues({ app: "hashnotes" });
     if (pageToken) {
       query = query.pageToken(pageToken);
     }
@@ -112,15 +108,13 @@ export async function GET(request: NextRequest) {
         .map(async (f: FileListItem) => {
           const url = await pinata.gateways.public.convert(f.cid as string);
           let text: string | undefined;
-          if (includeText) {
-            try {
-              const resp = await pinata.gateways.public.get(f.cid as string);
-              const data: unknown = resp.data;
-              if (typeof data === "string") text = data;
-              else if (data && typeof data === "object") text = JSON.stringify(data);
-            } catch {
-              text = undefined;
-            }
+          try {
+            const resp = await pinata.gateways.public.get(f.cid as string);
+            const data: unknown = resp.data;
+            if (typeof data === "string") text = data;
+            else if (data && typeof data === "object") text = JSON.stringify(data);
+          } catch {
+            text = undefined;
           }
           return { cid: f.cid as string, url, createdAt: f.created_at, text };
         })

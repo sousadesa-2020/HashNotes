@@ -89,8 +89,7 @@ Uploads are tagged with `keyvalues { app: "hashnotes" }` for easy filtering.
 
 - Create a note in the UI and upload to IPFS.
 - The note appears immediately with a CID and a gateway link.
-- The list shows items from your account (HashNotes-tagged by default) and merges them with your local cache after hydration.
-- Toggle “Show all gateway files” to list non-tagged items (limited to safe MIME types).
+- The list shows only HashNotes-tagged items and merges with your local cache after hydration.
 
 ## API
 
@@ -102,9 +101,7 @@ Uploads are tagged with `keyvalues { app: "hashnotes" }` for easy filtering.
   - Query:
     - `limit` (default 20, max 50)
     - `pageToken` (optional pagination)
-    - `includeText` (`true|false`, default `false`)
-    - `appOnly` (`true|false`, default `true`)
-  - Returns: `{ items: [{ cid, url, createdAt, text? }], nextPageToken }`
+  - Returns: `{ items: [{ cid, url, createdAt, text }], nextPageToken }`
 
 ## Security
 
